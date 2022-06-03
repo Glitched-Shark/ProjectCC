@@ -31,6 +31,6 @@ public class PlayerController : MonoBehaviour
     void OnClicked(InputAction.CallbackContext context)
     {
         Debug.Log("Click Click");
-        touchAction.started -= OnClicked;
+        //touchAction.started -= OnClicked;
     }
 }
