@@ -6,14 +6,11 @@ using UnityEngine;
 
 public class BattleCard : MonoBehaviour
 {
-    [SerializeField]
+    //[SerializeField]
     public cardData m_cardData{ get; set; }
 
-    bool isFront = false;
-    public SO_CardsLibary m_cardsLibrary;
     private SpriteRenderer m_spRenderer;
     public SpriteRenderer m_textSPRenderer;
-    public Sprite m_cardBackView;
     
 
     // Start is called before the first frame update
@@ -41,33 +38,12 @@ public class BattleCard : MonoBehaviour
         
     }
 
-    public void ChangeCardView(bool front)
-    {
-        isFront = front;
-
-        if (front)
-        {
-            m_spRenderer.sprite = m_cardData.cardFrontView;
-            m_textSPRenderer.enabled = true;
-        }
-        else
-        {
-            m_spRenderer.sprite = m_cardBackView;
-            m_textSPRenderer.enabled = false;
-        }
-            
-    }
-
-    public void SetCardData(SO_CardsLibary library,int cardIndex, bool frontView)
+    public void SetCardData(cardData cData, Sprite indexSprite)
     {
         GetRequiredSPRenderer();
-        if (library != null)
-        {
-            m_cardsLibrary = library;
-            m_cardData = m_cardsLibrary.cards[cardIndex];
-            m_cardBackView = m_cardsLibrary.cardBackView;
-            m_textSPRenderer.sprite = m_cardsLibrary.numberFont[m_cardData.atk_power-1];
-           ChangeCardView(frontView);
-        }
+        m_cardData = cData;
+        m_spRenderer.sprite = m_cardData.cardSprite;
+        m_textSPRenderer.sprite = indexSprite;
+        
     }
 }

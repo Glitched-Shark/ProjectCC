@@ -13,18 +13,23 @@ MonoBehaviour:
   m_Name: Card Library
   m_EditorClassIdentifier: 
   cards:
-  - m_name: Basic Attack
-    atk_power: 1
-    cardFrontView: {fileID: 21300000, guid: 094abcad5e3c264479679903418d90ca, type: 3}
-  - m_name: Stab
-    atk_power: 2
-    cardFrontView: {fileID: 21300000, guid: a817c048992b3b04dadf8593d99e2388, type: 3}
-  - m_name: Heavy Blow
-    atk_power: 3
-    cardFrontView: {fileID: 21300000, guid: 8303bfa366fbe6c4aa5a875fe586ee9a, type: 3}
+  - m_name: Sword
+    m_type: 0
+    cardSprite: {fileID: 21300000, guid: 094abcad5e3c264479679903418d90ca, type: 3}
+  - m_name: PoisonDagger
+    m_type: 0
+    cardSprite: {fileID: 21300000, guid: a817c048992b3b04dadf8593d99e2388, type: 3}
+  - m_name: Shield
+    m_type: 0
+    cardSprite: {fileID: 21300000, guid: 8303bfa366fbe6c4aa5a875fe586ee9a, type: 3}
+  - m_name: Medicine
+    m_type: 0
+    cardSprite: {fileID: 21300000, guid: 27a157aa05884b0438d097a295fc1327, type: 3}
   cardBackView: {fileID: 21300000, guid: 8f030edd8554c044990f4134ed57bb66, type: 3}
   battleCardPrefab: {fileID: 657365395595536733, guid: 89743a4fe276cad4a89aabde8038547a, type: 3}
-  numberFont:
+  cardNumberSprite:
   - {fileID: 21300000, guid: c90ab62036214d64fb7ebc780ac6f899, type: 3}
   - {fileID: 21300000, guid: 201ba44c95c8cfc4da3bd4daa5427c1a, type: 3}
   - {fileID: 21300000, guid: 5b5c1704e06f31d4990f3791b24bcd67, type: 3}
+  - {fileID: 21300000, guid: 78e8e423dc508844786884f11a8387ec, type: 3}
+  - {fileID: 21300000, guid: 47800712e5ca39940ba8abb76fe999ea, type: 3}
