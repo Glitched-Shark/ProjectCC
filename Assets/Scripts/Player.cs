@@ -32,12 +32,14 @@ public class Player : MonoBehaviour
     public List<int> m_deckCardIndex = new List<int>();
     public List<GameObject> m_hand = new List<GameObject>();
     public List<GameObject> m_deck = new List<GameObject>();
-    //public List<cardData> m_discarded = new List<cardData>();
+    public List<GameObject> m_discarded = new List<GameObject>();
+    public Vector3 deckLocation;
+    public Vector3 handMidpoint;
 
     //Hands Position
     protected Vector3 handStartPosition { get; set; }
-    protected float handXOffset = 1.0f;
-    protected float handZOffset = 0.5f;
+    protected float handXOffset = 1.4f;
+    protected float handZOffset = 1.5f;
 
     //PlayerStats
     public CharacterData playerData;
@@ -60,6 +62,8 @@ public class Player : MonoBehaviour
         currentHealth = maxHealth;
         m_deck.Clear();
         m_deck = GenerateDeck(pData.cardTypes);
+        ShuffleDeck();
+        LTMoveDrawnCardsToHand(DrawCard(5));
     }
 
     List<GameObject> GenerateDeck(List <CardType> cTypes)
@@ -70,11 +74,12 @@ public class Player : MonoBehaviour
         {
             for (int j = 0; j < totalCardNumber; j++)
             {
-                GameObject card = Instantiate(cardLibary.battleCardPrefab, handStartPosition, Quaternion.identity, this.gameObject.transform);
+                GameObject card = Instantiate(cardLibary.battleCardPrefab, deckLocation, Quaternion.identity, this.gameObject.transform);
                 if (card != null)
                 {
                     BattleCard cardScript = card.GetComponent<BattleCard>();
                     cardScript.SetCardData(cardLibary.cards[(int)cTypes[i]], cardLibary.cardNumberSprite[j]);
+                    cardScript.gameObject.SetActive(false);
                     deck.Add(card);
                 }
             }
@@ -82,69 +87,44 @@ public class Player : MonoBehaviour
         return deck;
     }
 
-    public virtual void Init()
-    {
-        InitPlayerProperties();
-        ShuffleDeck();
-        DrawCard(startingHandCount,false);
-    }
-
-    public virtual void InitPlayerProperties()
-    {
-        maxHealth = 20;
-        currentHealth = maxHealth;
-        m_phase = PlayerPhase.Idle; 
-        m_deckCardIndex.Clear();
-    }
-
     public void ShuffleDeck()
     {
         //using System.Linq to use OrderBy 
         //Unity has its own random generator
-        var tempDeck = m_deckCardIndex.OrderBy(item => UnityEngine.Random.Range(0, int.MaxValue));
-        m_deckCardIndex = tempDeck.ToList<int>(); 
+        var tempDeck = m_deck.OrderBy(item => UnityEngine.Random.Range(0, int.MaxValue));
+        m_deck = tempDeck.ToList<GameObject>();
     }
 
-    public void DrawCard(int amount, bool frontView)
+    public List<GameObject> DrawCard(int amount)
     {
+        List<GameObject> drawn = new List<GameObject>();
+        Vector3 cardPos = m_deck[0].transform.position;
+        cardPos.z = handZOffset;
+
         for (int i = 0; i < amount; i++)
         {
-            GameObject drawnCard = Instantiate(cardLibary.battleCardPrefab, handStartPosition, Quaternion.identity,this.gameObject.transform);
-            BattleCard cardScript = drawnCard.GetComponent<BattleCard>();
+            m_deck[0].transform.position = cardPos;
+            m_deck[0].SetActive(true);
+            m_hand.Add(m_deck[0]);
+            drawn.Add(m_deck[0]);
+            m_deck.Remove(m_deck[0]);
 
-            if (cardScript != null)
-            {
-               // cardScript.SetCardData(cardLibary, m_deckCardIndex[i], frontView);
-                m_hand.Add(drawnCard);
-                m_deckCardIndex.RemoveAt(0);
-            }
+            cardPos.z -= handZOffset;
         }
-        AdjustHandsPosition();
+        return drawn; 
     }
 
-    public void AdjustHandsPosition()
+    public void LTMoveDrawnCardsToHand(List<GameObject> drawnCards)
     {
-        if (m_hand.Count > 0)
+        if (drawnCards.Count > 0)
         {
-            Vector3 cardPos = handStartPosition;
-            cardPos.z = (m_hand.Count - 1) * handZOffset + handStartPosition.z;
-
-            if (m_hand.Count == 1)
+            float cardXPos = (drawnCards.Count - 1) * handXOffset / -2.0f;
+            for (int i = 0; i < drawnCards.Count; i++)
             {
-                m_hand[0].transform.position = cardPos;
-                return;
-            }
-
-            cardPos.x = (m_hand.Count - 1)*handXOffset/-2.0f;
-            m_hand[0].transform.position = cardPos;
-
-            for (int i = 1; i < m_hand.Count; i++)
-            {
-                cardPos.x += handXOffset;
-                cardPos.z -= handZOffset;
-                m_hand[i].transform.position = cardPos;
-
+                LeanTween.moveX(drawnCards[i], cardXPos, 0.5f).setDelay(0.5f * i);
+                cardXPos += handXOffset;
             }
         }
     }
+
 }
